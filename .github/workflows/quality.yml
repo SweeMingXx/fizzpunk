@@ -34,13 +34,13 @@ jobs:
           const fs=require('fs');
           if(fs.existsSync('qa/FAILURE.txt')) console.log('::error title=Browser validation::'+fs.readFileSync('qa/FAILURE.txt','utf8').replaceAll('%','%25').replaceAll('\r','%0D').replaceAll('\n','%0A'));
           NODE
-      - name: Persist verified polish and QA report
+      - name: Persist verified release and QA report
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html qa/REPORT.md qa/desktop.png qa/mobile.png
+          git add index.html tests/verify.mjs qa/REPORT.md qa/desktop.png qa/mobile.png
           if ! git diff --cached --quiet; then
-            git commit -m 'Persist browser-verified release and QA previews'
+            git commit -m 'Persist visually polished and browser-verified release'
             git push
           fi
       - name: Upload browser test evidence
