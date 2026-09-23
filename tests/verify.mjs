@@ -32,7 +32,7 @@ try {
   await page.locator('#flipButton').click(); await waitTrick();
   await page.locator('[data-flavor="0"]').click();
   record('Flavor colors, nutrition, 360° spin and kickflip controls update without reload');
-  await page.screenshot({ path: 'qa/desktop.png', fullPage: true });
+  await page.waitForTimeout(700); await page.screenshot({ path: 'qa/desktop.png', fullPage: true, animations: 'disabled' });
   await page.locator('.hero-actions [data-open="packDrawer"]').click();
   assert.equal(await page.locator('#checkoutButton').isDisabled(), true);
   for (let f=0;f<3;f++) for(let i=0;i<4;i++) await page.locator(`[data-plus="${f}"]`).click();
