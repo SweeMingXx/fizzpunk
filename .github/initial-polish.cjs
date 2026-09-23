@@ -11,8 +11,8 @@ const edits = [
 ];
 for (const [before, after] of edits) html = html.replace(before, after);
 if (!html.includes('/* final visual review */')) html=html.replace('</style>', '/* final visual review: outrank asynchronously injected CDN preflight */\nbody h1,body h2,body h3{font-weight:900}.logo{white-space:nowrap;flex-shrink:0}@media(max-width:480px){.nav>.button{display:none}.menu-toggle{margin-left:auto}}\n</style>');
+if (!html.includes('.arcade .overlay-card .eyebrow{')) html=html.replace('</style>', '.arcade .overlay-card .eyebrow{color:var(--pine)}\n</style>');
 fs.writeFileSync('index.html',html);
-// Freeze CSS transitions and allow the label tint to settle for stable QA screenshots.
 let tests=fs.readFileSync('tests/verify.mjs','utf8');
 tests=tests.replace("await page.screenshot({ path: 'qa/desktop.png', fullPage: true });", "await page.waitForTimeout(700); await page.screenshot({ path: 'qa/desktop.png', fullPage: true, animations: 'disabled' });");
 fs.writeFileSync('tests/verify.mjs',tests);
