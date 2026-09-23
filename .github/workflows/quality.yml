@@ -1,0 +1,44 @@
+name: Browser and accessibility checks
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [verify-fizzpunk]
+permissions:
+  contents: write
+concurrency:
+  group: fizzpunk-quality
+  cancel-in-progress: true
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply initial release polish
+        run: node .github/initial-polish.cjs
+      - name: Install browser testing dependencies
+        run: |
+          npm install --no-save --package-lock=false playwright@1.51.1 @axe-core/playwright@4.10.2
+          npx playwright install --with-deps chromium
+      - name: Validate interactions and layouts
+        run: node tests/verify.mjs
+      - name: Persist verified polish and QA report
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html qa/REPORT.md qa/desktop.png qa/mobile.png
+          if ! git diff --cached --quiet; then
+            git commit -m 'Persist browser-verified release and QA previews'
+            git push
+          fi
+      - name: Upload browser test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fizzpunk-browser-evidence
+          path: qa/
