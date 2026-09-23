@@ -1,0 +1,5 @@
+node_modules/
+npm-debug.log*
+qa/FAILURE.txt
+qa/failure.png
+qa/accessibility.json
