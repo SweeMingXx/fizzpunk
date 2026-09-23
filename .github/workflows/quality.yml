@@ -27,6 +27,13 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Validate interactions and layouts
         run: node tests/verify.mjs
+      - name: Annotate failures
+        if: failure()
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          if(fs.existsSync('qa/FAILURE.txt')) console.log('::error title=Browser validation::'+fs.readFileSync('qa/FAILURE.txt','utf8').replaceAll('%','%25').replaceAll('\r','%0D').replaceAll('\n','%0A'));
+          NODE
       - name: Persist verified polish and QA report
         run: |
           git config user.name 'github-actions[bot]'

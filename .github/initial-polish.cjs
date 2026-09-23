@@ -1,7 +1,6 @@
 // One-time, idempotent release polish. Removed after the verified release.
 const fs = require('node:fs');
-const path = 'index.html';
-let html = fs.readFileSync(path, 'utf8');
+let html = fs.readFileSync('index.html', 'utf8');
 const edits = [
   ['body.rotation.y=-Math.PI/2;', 'body.rotation.y=Math.PI;'],
   ['opacity:.65;margin-top:2px', 'opacity:.8;margin-top:2px'],
@@ -12,5 +11,6 @@ const edits = [
   ["const old=[...pack];pack=[0,0,0];", "pack=[0,0,0];"]
 ];
 for (const [before, after] of edits) html = html.replace(before, after);
-fs.writeFileSync(path, html);
+if (!html.includes('/* compact release polish */')) html=html.replace('@media(prefers-reduced-motion:reduce)', '/* compact release polish */\n#endOverlay{align-items:flex-start;overflow-y:auto}#endOverlay .overlay-card{margin:auto 0;flex-shrink:0}.nav>.button{white-space:nowrap}@media(max-width:380px){.nav>.button{display:none}.menu-toggle{margin-left:auto}}\n@media(prefers-reduced-motion:reduce)');
+fs.writeFileSync('index.html', html);
 console.log('Applied initial release polish.');
